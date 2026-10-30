@@ -1,11 +1,7 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { disposeScene, prefersReduced, visibleLoop } from './util'
-
-gsap.registerPlugin(ScrollTrigger)
 
 /** Original mint-glass gem with orbiting coins and drifting particles. Pointer + scroll reactive. */
 export default function HeroScene({ onFail }: { onFail: () => void }) {
@@ -55,13 +51,6 @@ export default function HeroScene({ onFail }: { onFail: () => void }) {
     const coins: THREE.Mesh[] = []
     for (let i = 0; i < 6; i++) { const c = new THREE.Mesh(coinGeo, coinMat); orbit.add(c); coins.push(c) }
 
-    // --- particles
-    const N = 170, pos = new Float32Array(N * 3)
-    for (let i = 0; i < N; i++) { const r = 2.8 + Math.random() * 3.2, a = Math.random() * 6.283, b = Math.acos(2 * Math.random() - 1); pos[i * 3] = r * Math.sin(b) * Math.cos(a); pos[i * 3 + 1] = r * Math.cos(b) * 0.8; pos[i * 3 + 2] = r * Math.sin(b) * Math.sin(a) - 1 }
-    const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(pos, 3))
-    const points = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0x9ffbd8, size: 0.035, transparent: true, opacity: 0.7, sizeAttenuation: true, depthWrite: false }))
-    scene.add(points)
-
     // --- lights
     const l1 = new THREE.PointLight(0x73f5bc, 60, 14); l1.position.set(3.5, 2.5, 3.5); scene.add(l1)
     const l2 = new THREE.PointLight(0x9fb4ff, 40, 14); l2.position.set(-3.5, -1.5, 3); scene.add(l2)
@@ -85,7 +74,6 @@ export default function HeroScene({ onFail }: { onFail: () => void }) {
     }
     if (!reduced) window.addEventListener('pointermove', onMove)
     const sc = { p: 0 }
-    const st = reduced ? null : gsap.to(sc, { p: 1, ease: 'none', scrollTrigger: { trigger: el, start: 'top top', end: 'bottom top', scrub: 0.8 } })
 
     const stop = visibleLoop(el, t => {
       cur.x += (target.x - cur.x) * 0.06; cur.y += (target.y - cur.y) * 0.06
@@ -97,7 +85,6 @@ export default function HeroScene({ onFail }: { onFail: () => void }) {
       group.scale.setScalar(1 - sc.p * 0.3)
       orbit.rotation.y = tt * 0.25 + cur.x * 0.3
       coins.forEach((c, i) => { const a = (i / coins.length) * 6.283 + tt * 0.55; c.position.set(Math.cos(a) * 2.05, Math.sin(a) * 2.05, 0); c.rotation.set(Math.PI / 2 + Math.sin(tt + i) * 0.3, tt * 1.5 + i, 0) })
-      points.rotation.y = tt * 0.02 + cur.x * 0.05
       core.material.opacity = 0.3 + Math.sin(tt * 1.4) * 0.1
       l1.position.x = 3.5 + cur.x * 1.5; l1.position.y = 2.5 - cur.y * 1.2
       renderer.render(scene, camera)
@@ -105,7 +92,6 @@ export default function HeroScene({ onFail }: { onFail: () => void }) {
 
     return () => {
       stop(); ro.disconnect(); window.removeEventListener('pointermove', onMove)
-      st?.scrollTrigger?.kill(); st?.kill()
       disposeScene(scene); envTex.dispose(); pmrem.dispose(); renderer.dispose()
       renderer.domElement.remove()
     }

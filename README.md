@@ -20,8 +20,8 @@ Implemented in [`src/engine/safeToSave.ts`](src/engine/safeToSave.ts) as a pure,
 
 Documented default policies (design parameters from the synopsis, not research findings): cap applied only *after* the zero floor; the recommendation never exceeds the safe amount **or** the balance held today; stricter of % cap and absolute cap wins; irregular income counted at 70%; each payment counted once (fixed bills live in dated payments, `essentialMonthly` covers only variable essentials).
 
-## 3D & motion
-Three.js WebGL hero gem (lazy-loaded, pointer + scroll reactive), a GSAP ScrollTrigger pinned story that builds the Safe-to-Save number layer by layer from the real engine, 3D tilt reveals, and a scroll-flattening product preview. Falls back to the SVG crystal and a static step list without WebGL or with reduced motion.
+## 3D hero
+Three.js WebGL gem with an orbiting ring of coins (lazy-loaded, pointer reactive). Falls back to the SVG crystal without WebGL.
 
 ## Features
 Landing page with 3D mint-glass crystal (SVG + CSS 3D, no WebGL, reduced-motion aware) and an interactive brake demo · sign up / sign in (local, PBKDF2-hashed, clearly *not* production auth) · demo mode with 4 synthetic personas · 4-step onboarding · dashboard (Safe-to-Save, 6 summary cards, cash-flow projection, upcoming payments with "mark paid", goals, insights, activity) · what-if calculator with breakdown · searchable/filterable transactions with add/edit/delete · goals CRUD with brake-respecting contribution suggestions · insights (monthly trend, category spend, income variability, recurring detection, forecast) · settings, privacy mode, demo reset, delete local data.
